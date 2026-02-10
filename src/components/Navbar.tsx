@@ -5,7 +5,8 @@ import { useState } from "react";
 
 const navItems = [
   { label: "Home", path: "/" },
-  { label: "DNS Tools", path: "/dns-lookup" },
+  { label: "DNS Lookup", path: "/dns-lookup" },
+  { label: "DNS Propagation", path: "/dns-propagation" },
   { label: "WHOIS", path: "/whois-lookup" },
   { label: "SSL Check", path: "/ssl-check" },
   { label: "Email Tools", path: "/email-blacklist" },
