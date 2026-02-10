@@ -1,13 +1,14 @@
 import { motion } from "framer-motion";
 import {
   Globe, Search, Shield, Mail, Server, AlertTriangle, MapPin, AtSign,
-  Lock, ShieldCheck, BarChart3, Bug, Star, History
+  Lock, ShieldCheck, BarChart3, Bug, Star, History, Radio
 } from "lucide-react";
 import Layout from "@/components/Layout";
 import ToolCard from "@/components/ToolCard";
 
 const tools = [
-  { icon: Globe, title: "DNS Lookup", description: "Query DNS records including A, AAAA, MX, CNAME, NS, TXT, PTR, and SOA records. Check DNS propagation and DNSSEC.", path: "/dns-lookup" },
+  { icon: Globe, title: "DNS Lookup", description: "Query DNS records including A, AAAA, MX, CNAME, NS, TXT, PTR, and SOA records.", path: "/dns-lookup" },
+  { icon: Radio, title: "DNS Propagation", description: "Check if DNS changes have propagated across 50+ global DNS servers worldwide.", path: "/dns-propagation" },
   { icon: Search, title: "WHOIS Lookup", description: "Get domain registration details including registrant, registrar, creation/expiry dates, and name servers.", path: "/whois-lookup" },
   { icon: Mail, title: "Email Blacklist Check", description: "Check if your domain or IP is listed on major email blacklists like Spamhaus, SORBS, and Barracuda.", path: "/email-blacklist" },
   { icon: Shield, title: "SSL Certificate Check", description: "Validate SSL certificates, check expiration, certificate chain, and TLS configuration.", path: "/ssl-check" },

@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import DnsLookup from "./pages/DnsLookup";
+import DnsPropagation from "./pages/DnsPropagation";
 import WhoisLookup from "./pages/WhoisLookup";
 import EmailBlacklist from "./pages/EmailBlacklist";
 import SslCheck from "./pages/SslCheck";
@@ -31,6 +32,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/dns-lookup" element={<DnsLookup />} />
+          <Route path="/dns-propagation" element={<DnsPropagation />} />
           <Route path="/whois-lookup" element={<WhoisLookup />} />
           <Route path="/email-blacklist" element={<EmailBlacklist />} />
           <Route path="/ssl-check" element={<SslCheck />} />
