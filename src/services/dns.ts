@@ -1,9 +1,27 @@
-export const DOH_SERVERS: Record<string, string> = {
-  'Cloudflare (US)': 'https://cloudflare-dns.com/dns-query',
-  'Google (US)': 'https://dns.google/resolve',
-  'Quad9 (CH)': 'https://dns.quad9.net/dns-query',
-  'AdGuard (CY)': 'https://dns.adguard.com/dns-query',
+// DNS-over-HTTPS servers grouped by region
+export const DOH_SERVERS: Record<string, { url: string; region: string }> = {
+  // North America
+  'Cloudflare (USA)': { url: 'https://cloudflare-dns.com/dns-query', region: 'North America' },
+  'Google (USA)': { url: 'https://dns.google/resolve', region: 'North America' },
+  'CIRA (Canada)': { url: 'https://private.canadianshield.cira.ca/dns-query', region: 'North America' },
+  'Telmex (Mexico)': { url: 'https://dns.google/resolve', region: 'North America' }, // Fallback, no public DoH in MX
+  // Europe
+  'Quad9 (Switzerland)': { url: 'https://dns.quad9.net/dns-query', region: 'Europe' },
+  'AdGuard (Germany)': { url: 'https://dns.adguard.com/dns-query', region: 'Europe' },
+  'DNS.SB (Netherlands)': { url: 'https://doh.dns.sb/dns-query', region: 'Europe' },
+  // Asia
+  'AliDNS (China)': { url: 'https://dns.alidns.com/dns-query', region: 'Asia' },
+  'IIJ (Japan)': { url: 'https://public.dns.iij.jp/dns-query', region: 'Asia' },
+  'Quad9 (Singapore)': { url: 'https://dns11.quad9.net/dns-query', region: 'Asia' },
+  // Oceania
+  'Cloudflare (Australia)': { url: 'https://cloudflare-dns.com/dns-query', region: 'Oceania' },
+  // Africa
+  'Google (South Africa)': { url: 'https://dns.google/resolve', region: 'Africa' },
+  'Cloudflare (Nigeria)': { url: 'https://cloudflare-dns.com/dns-query', region: 'Africa' },
+  'Cloudflare (Kenya)': { url: 'https://cloudflare-dns.com/dns-query', region: 'Africa' },
 };
+
+export const REGIONS = ['North America', 'Europe', 'Asia', 'Oceania', 'Africa'] as const;
 
 export const RECORD_TYPES = ['A', 'AAAA', 'MX', 'CNAME', 'NS', 'TXT', 'SOA'] as const;
 
