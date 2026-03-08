@@ -13,10 +13,14 @@ interface ToolPageLayoutProps {
   toolId?: string;
   children?: ReactNode;
   features: { title: string; description: string }[];
-  onSubmit?: (query: string) => void;
+  onSubmit?: (query: string, recordType?: string) => void;
   isLoading?: boolean;
   results?: ReactNode;
+  showRecordTypeSelector?: boolean;
+  recordTypes?: string[];
 }
+
+const DEFAULT_RECORD_TYPES = ['A', 'AAAA', 'CNAME', 'MX', 'NS', 'PTR', 'SRV', 'SOA', 'TXT', 'CAA', 'DS', 'DNSKEY'];
 
 const ToolPageLayout = ({
   icon: Icon,
@@ -29,9 +33,12 @@ const ToolPageLayout = ({
   onSubmit,
   isLoading = false,
   results,
+  showRecordTypeSelector = false,
+  recordTypes = DEFAULT_RECORD_TYPES,
 }: ToolPageLayoutProps) => {
   const id = toolId || title.toLowerCase().replace(/\s+/g, "-");
   const [query, setQuery] = useState("");
+  const [selectedRecordType, setSelectedRecordType] = useState(recordTypes[0]);
   const [history, setHistory] = useState<string[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -58,7 +65,7 @@ const ToolPageLayout = ({
       addSearchHistory(id, query.trim());
       setHistory(getSearchHistory(id));
       setShowHistory(false);
-      onSubmit(query.trim());
+      onSubmit(query.trim(), showRecordTypeSelector ? selectedRecordType : undefined);
     }
   };
 
@@ -113,8 +120,8 @@ const ToolPageLayout = ({
             className="bg-card rounded-xl border border-border shadow-card p-6"
           >
             <label className="block text-sm font-medium text-foreground mb-2">{inputLabel}</label>
-            <div className="flex gap-3">
-              <div className="relative flex-1">
+            <div className="flex gap-3 flex-wrap sm:flex-nowrap">
+              <div className="relative flex-1 min-w-0">
                 <input
                   ref={inputRef}
                   type="text"
@@ -139,6 +146,7 @@ const ToolPageLayout = ({
                           <Clock className="w-3 h-3" /> Recent searches
                         </span>
                         <button
+                          type="button"
                           onClick={handleClearAll}
                           className="text-xs text-muted-foreground hover:text-destructive flex items-center gap-1 transition-colors"
                         >
@@ -150,6 +158,7 @@ const ToolPageLayout = ({
                           .filter((h) => !query || h.toLowerCase().includes(query.toLowerCase()))
                           .map((item) => (
                             <button
+                              type="button"
                               key={item}
                               onClick={() => handleSelectHistory(item)}
                               className="w-full flex items-center justify-between px-3 py-2.5 text-sm text-foreground hover:bg-muted/60 transition-colors group"
@@ -169,17 +178,28 @@ const ToolPageLayout = ({
                   )}
                 </AnimatePresence>
               </div>
+              {showRecordTypeSelector && (
+                <select
+                  value={selectedRecordType}
+                  onChange={(e) => setSelectedRecordType(e.target.value)}
+                  className="px-3 py-3 rounded-lg border border-input bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring min-w-[90px]"
+                >
+                  {recordTypes.map((type) => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+              )}
               <button
                 type="submit"
                 disabled={isLoading || !query.trim()}
-                className="px-6 py-3 rounded-lg bg-gradient-primary text-primary-foreground font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+                className="px-6 py-3 rounded-lg bg-gradient-primary text-primary-foreground font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2 whitespace-nowrap"
               >
                 {isLoading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <Search className="w-4 h-4" />
                 )}
-                Check
+                Search
               </button>
             </div>
           </motion.form>
