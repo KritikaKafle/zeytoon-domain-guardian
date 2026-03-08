@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import {
-  Globe, Search, Shield, Mail, Server, AlertTriangle, MapPin, AtSign,
+  Globe, Search, Shield, Mail, Server, AlertTriangle, AtSign,
   Lock, ShieldCheck, BarChart3, Bug, Star, History, Radio
 } from "lucide-react";
 import Layout from "@/components/Layout";
