@@ -24,18 +24,63 @@ const ToolPageLayout = ({
   description,
   placeholder = "Enter domain name (e.g., example.com)",
   inputLabel = "Domain / IP Address",
+  toolId,
   features,
   onSubmit,
   isLoading = false,
   results,
 }: ToolPageLayoutProps) => {
+  const id = toolId || title.toLowerCase().replace(/\s+/g, "-");
   const [query, setQuery] = useState("");
+  const [history, setHistory] = useState<string[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setHistory(getSearchHistory(id));
+  }, [id]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node) &&
+          inputRef.current && !inputRef.current.contains(e.target as Node)) {
+        setShowHistory(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (query.trim() && onSubmit) {
+      addSearchHistory(id, query.trim());
+      setHistory(getSearchHistory(id));
+      setShowHistory(false);
       onSubmit(query.trim());
     }
+  };
+
+  const handleSelectHistory = (item: string) => {
+    setQuery(item);
+    setShowHistory(false);
+    if (onSubmit) {
+      addSearchHistory(id, item);
+      setHistory(getSearchHistory(id));
+      onSubmit(item);
+    }
+  };
+
+  const handleRemoveItem = (e: React.MouseEvent, item: string) => {
+    e.stopPropagation();
+    removeSearchHistoryItem(id, item);
+    setHistory(getSearchHistory(id));
+  };
+
+  const handleClearAll = () => {
+    clearSearchHistory(id);
+    setHistory([]);
   };
 
   return (
