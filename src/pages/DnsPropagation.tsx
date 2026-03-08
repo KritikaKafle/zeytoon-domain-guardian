@@ -2,35 +2,22 @@ import { useState } from "react";
 import { Radio, Search, Loader2, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import Layout from "@/components/Layout";
-import DnsPropagationMap, { SERVER_COORDINATES } from "@/components/DnsPropagationMap";
-import { checkPropagation, REGIONS } from "@/services/dns";
+import DnsPropagationMap from "@/components/DnsPropagationMap";
+import { checkPropagation, DNS_SERVERS, REGIONS } from "@/services/dns";
 
 interface PropagationResult {
   server: string;
+  provider: string;
+  ip: string;
+  country: string;
+  flag: string;
   region: string;
+  coordinates: [number, number];
   response: { Answer?: { data: string }[] } | null;
   error: string | null;
 }
 
 const RECORD_TYPES = ['A', 'AAAA', 'CNAME', 'MX', 'NS', 'PTR', 'SRV', 'SOA', 'TXT', 'CAA'];
-
-// Country flags for servers
-const SERVER_FLAGS: Record<string, string> = {
-  'Cloudflare (USA)': '🇺🇸',
-  'Google (USA)': '🇺🇸',
-  'CIRA (Canada)': '🇨🇦',
-  'Telmex (Mexico)': '🇲🇽',
-  'Quad9 (Switzerland)': '🇨🇭',
-  'AdGuard (Germany)': '🇩🇪',
-  'DNS.SB (Netherlands)': '🇳🇱',
-  'AliDNS (China)': '🇨🇳',
-  'IIJ (Japan)': '🇯🇵',
-  'Quad9 (Singapore)': '🇸🇬',
-  'Cloudflare (Australia)': '🇦🇺',
-  'Google (South Africa)': '🇿🇦',
-  'Cloudflare (Nigeria)': '🇳🇬',
-  'Cloudflare (Kenya)': '🇰🇪',
-};
 
 const DnsPropagation = () => {
   const [query, setQuery] = useState("");
@@ -38,11 +25,10 @@ const DnsPropagation = () => {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<PropagationResult[]>([]);
   const [mapServers, setMapServers] = useState<{ name: string; coordinates: [number, number]; status: 'success' | 'error' | 'pending' }[]>(
-    // Initialize with all servers in pending state
-    Object.entries(SERVER_COORDINATES).map(([name, coords]) => ({
-      name,
-      coordinates: coords,
-      status: 'pending' as const,
+    DNS_SERVERS.map((s) => ({
+      name: s.name,
+      coordinates: s.coordinates,
+      status: 'pending',
     }))
   );
 
@@ -52,18 +38,16 @@ const DnsPropagation = () => {
 
     setLoading(true);
     setResults([]);
-    
+
     try {
-      const data: PropagationResult[] = await checkPropagation(query.trim(), recordType);
+      const data = await checkPropagation(query.trim(), recordType);
       setResults(data);
 
-      // Update map data
-      const servers = data.map((d) => ({
+      setMapServers(data.map((d) => ({
         name: d.server,
-        coordinates: SERVER_COORDINATES[d.server] || [0, 0],
+        coordinates: d.coordinates,
         status: d.response?.Answer?.length ? 'success' as const : d.error ? 'error' as const : 'pending' as const,
-      }));
-      setMapServers(servers);
+      })));
     } catch (e: any) {
       console.error(e);
     } finally {
@@ -72,14 +56,14 @@ const DnsPropagation = () => {
   };
 
   const getStatusIcon = (result: PropagationResult) => {
-    if (result.response?.Answer?.length) {
-      return <CheckCircle className="w-4 h-4 text-green-500" />;
-    }
-    if (result.error) {
-      return <XCircle className="w-4 h-4 text-red-500" />;
-    }
-    return <AlertCircle className="w-4 h-4 text-yellow-500" />;
+    if (result.response?.Answer?.length) return <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />;
+    if (result.error) return <XCircle className="w-4 h-4 text-red-500 shrink-0" />;
+    return <AlertCircle className="w-4 h-4 text-yellow-500 shrink-0" />;
   };
+
+  const serverList = results.length > 0 ? results : DNS_SERVERS.map((s) => ({
+    ...s, server: s.name, response: null, error: null,
+  }));
 
   return (
     <Layout>
@@ -97,15 +81,14 @@ const DnsPropagation = () => {
       <section className="py-6">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Left Panel - Search & Results */}
+            {/* Left Panel */}
             <div className="space-y-4">
-              {/* Search Form */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-card rounded-xl border border-border shadow-card p-4"
               >
-                <form onSubmit={handleSubmit} className="space-y-3">
+                <form onSubmit={handleSubmit}>
                   <div className="flex gap-2">
                     <input
                       type="text"
@@ -128,18 +111,13 @@ const DnsPropagation = () => {
                       disabled={loading || !query.trim()}
                       className="px-5 py-2.5 rounded-lg bg-gradient-primary text-primary-foreground font-medium text-sm hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
                     >
-                      {loading ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Search className="w-4 h-4" />
-                      )}
+                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
                       Search
                     </button>
                   </div>
                 </form>
               </motion.div>
 
-              {/* Results List */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -148,57 +126,49 @@ const DnsPropagation = () => {
               >
                 <div className="px-4 py-3 border-b border-border bg-muted/30">
                   <h3 className="font-display font-semibold text-foreground text-sm">
-                    Server Locations ({results.length || Object.keys(SERVER_COORDINATES).length})
+                    Server Locations ({DNS_SERVERS.length})
                   </h3>
                 </div>
                 <div className="max-h-[500px] overflow-y-auto divide-y divide-border">
-                  {results.length > 0 ? (
-                    REGIONS.map((region) => {
-                      const regionResults = results.filter((r) => r.region === region);
-                      if (regionResults.length === 0) return null;
-                      return (
-                        <div key={region}>
-                          <div className="px-4 py-2 bg-muted/50 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                            {region}
-                          </div>
-                          {regionResults.map((result) => (
-                            <div
-                              key={result.server}
-                              className="px-4 py-3 flex items-center gap-3 hover:bg-muted/30 transition-colors"
-                            >
-                              <span className="text-xl">{SERVER_FLAGS[result.server] || '🌐'}</span>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-foreground truncate">
-                                  {result.server}
+                  {REGIONS.map((region) => {
+                    const regionServers = serverList.filter((s) => s.region === region);
+                    if (regionServers.length === 0) return null;
+                    return (
+                      <div key={region}>
+                        <div className="px-4 py-2 bg-muted/50 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                          {region}
+                        </div>
+                        {regionServers.map((s) => (
+                          <div
+                            key={`${s.server}-${s.ip}`}
+                            className="px-4 py-3 flex items-center gap-3 hover:bg-muted/30 transition-colors"
+                          >
+                            <span className="text-xl">{s.flag}</span>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-foreground truncate">
+                                {s.country}
+                              </p>
+                              <p className="text-xs text-muted-foreground truncate">
+                                {s.provider} · {s.ip}
+                              </p>
+                              {s.response?.Answer?.length ? (
+                                <p className="text-xs text-green-600 font-mono truncate mt-0.5">
+                                  {s.response.Answer.map((a) => a.data).join(', ')}
                                 </p>
-                                <p className="text-xs text-muted-foreground truncate">
-                                  {result.response?.Answer?.length
-                                    ? result.response.Answer.map((a) => a.data).join(', ')
-                                    : result.error || 'No records found'}
-                                </p>
-                              </div>
-                              {getStatusIcon(result)}
+                              ) : s.error ? (
+                                <p className="text-xs text-red-500 truncate mt-0.5">Failed</p>
+                              ) : results.length > 0 ? (
+                                <p className="text-xs text-yellow-600 truncate mt-0.5">No records</p>
+                              ) : null}
                             </div>
-                          ))}
-                        </div>
-                      );
-                    })
-                  ) : (
-                    // Show empty state with server list
-                    Object.entries(SERVER_FLAGS).map(([server, flag]) => (
-                      <div
-                        key={server}
-                        className="px-4 py-3 flex items-center gap-3"
-                      >
-                        <span className="text-xl">{flag}</span>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-foreground truncate">{server}</p>
-                          <p className="text-xs text-muted-foreground">Ready to check</p>
-                        </div>
-                        <div className="w-4 h-4 rounded-full border-2 border-muted-foreground/30" />
+                            {results.length > 0 ? getStatusIcon(s as PropagationResult) : (
+                              <div className="w-4 h-4 rounded-full border-2 border-muted-foreground/30" />
+                            )}
+                          </div>
+                        ))}
                       </div>
-                    ))
-                  )}
+                    );
+                  })}
                 </div>
               </motion.div>
             </div>
@@ -208,6 +178,7 @@ const DnsPropagation = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
+              className="lg:sticky lg:top-20 lg:self-start"
             >
               <DnsPropagationMap servers={mapServers} />
             </motion.div>

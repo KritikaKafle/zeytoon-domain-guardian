@@ -5,7 +5,7 @@ const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
 interface ServerLocation {
   name: string;
-  coordinates: [number, number]; // [longitude, latitude]
+  coordinates: [number, number];
   status: 'success' | 'error' | 'pending';
 }
 
@@ -15,7 +15,7 @@ interface DnsPropagationMapProps {
 
 const DnsPropagationMap = ({ servers }: DnsPropagationMapProps) => {
   return (
-    <div className="bg-card rounded-xl border border-border p-4">
+    <div className="bg-card rounded-xl border border-border p-4 h-full">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-display font-bold text-foreground">DNS Propagation Map</h3>
         <div className="flex items-center gap-4 text-xs">
@@ -63,26 +63,24 @@ const DnsPropagationMap = ({ servers }: DnsPropagationMapProps) => {
             }
           </Geographies>
           {servers.map((server, i) => (
-            <Marker key={server.name} coordinates={server.coordinates}>
+            <Marker key={`${server.name}-${i}`} coordinates={server.coordinates}>
               <motion.g
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: i * 0.05, type: "spring", stiffness: 300 }}
+                transition={{ delay: i * 0.03, type: "spring", stiffness: 300 }}
               >
-                {/* Pin shape */}
                 <path
-                  d="M0,-24 C-6,-24 -10,-18 -10,-12 C-10,-4 0,0 0,0 C0,0 10,-4 10,-12 C10,-18 6,-24 0,-24Z"
+                  d="M0,-18 C-5,-18 -8,-14 -8,-9 C-8,-3 0,0 0,0 C0,0 8,-3 8,-9 C8,-14 5,-18 0,-18Z"
                   fill={
                     server.status === 'success' ? '#22c55e' :
                     server.status === 'error' ? '#ef4444' : '#eab308'
                   }
                   stroke="#fff"
-                  strokeWidth={1.5}
+                  strokeWidth={1}
                 />
-                {/* Inner circle */}
                 <circle
-                  cy={-14}
-                  r={4}
+                  cy={-10}
+                  r={3}
                   fill="#fff"
                   opacity={0.9}
                 />
@@ -97,26 +95,3 @@ const DnsPropagationMap = ({ servers }: DnsPropagationMapProps) => {
 };
 
 export default DnsPropagationMap;
-
-// Server coordinates for the DNS servers
-export const SERVER_COORDINATES: Record<string, [number, number]> = {
-  // North America
-  'Cloudflare (USA)': [-122.4, 37.8],
-  'Google (USA)': [-122.1, 37.4],
-  'CIRA (Canada)': [-75.7, 45.4],
-  'Telmex (Mexico)': [-99.1, 19.4],
-  // Europe
-  'Quad9 (Switzerland)': [8.5, 47.4],
-  'AdGuard (Germany)': [13.4, 52.5],
-  'DNS.SB (Netherlands)': [4.9, 52.4],
-  // Asia
-  'AliDNS (China)': [121.5, 31.2],
-  'IIJ (Japan)': [139.7, 35.7],
-  'Quad9 (Singapore)': [103.8, 1.3],
-  // Oceania
-  'Cloudflare (Australia)': [151.2, -33.9],
-  // Africa
-  'Google (South Africa)': [28.0, -26.2],
-  'Cloudflare (Nigeria)': [3.4, 6.5],
-  'Cloudflare (Kenya)': [36.8, -1.3],
-};
