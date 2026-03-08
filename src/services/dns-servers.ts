@@ -41,7 +41,7 @@ export const DNS_SERVERS: DNSServer[] = [
   // Asia
   { name: 'DigitalOcean', provider: 'DigitalOcean LLC', ip: '139.59.219.245', country: 'Singapore', flag: '🇸🇬', region: 'Asia', coordinates: [103.8, 1.3], dohUrl: 'https://dns.google/resolve' },
   { name: 'SK Telecom', provider: 'SK Telecom', ip: '203.236.1.12', country: 'South Korea', flag: '🇰🇷', region: 'Asia', coordinates: [127.0, 37.6], dohUrl: 'https://dns.google/resolve' },
-  { name: 'AliDNS', provider: 'Aliyun Computing Co. Ltd', ip: '223.5.5.5', country: 'China', flag: '🇨🇳', region: 'Asia', coordinates: [121.5, 31.2], dohUrl: 'https://dns.alidns.com/dns-query' },
+  { name: 'AliDNS', provider: 'Aliyun Computing Co. Ltd', ip: '192.185.225.49', country: 'China', flag: '🇨🇳', region: 'Asia', coordinates: [120.2, 30.3], dohUrl: 'https://dns.alidns.com/dns-query' },
   { name: 'Teknet', provider: 'Teknet Yazlim', ip: '31.7.37.37', country: 'Turkey', flag: '🇹🇷', region: 'Asia', coordinates: [28.9, 41.0], dohUrl: 'https://dns.google/resolve' },
   { name: 'Skylink', provider: 'Skylink Fibernet Private Limited', ip: '103.99.150.10', country: 'India', flag: '🇮🇳', region: 'Asia', coordinates: [77.2, 28.6], dohUrl: 'https://dns.google/resolve' },
   { name: 'CMPak', provider: 'CMPak Limited', ip: '209.150.154.1', country: 'Pakistan', flag: '🇵🇰', region: 'Asia', coordinates: [73.0, 33.7], dohUrl: 'https://dns.google/resolve' },
