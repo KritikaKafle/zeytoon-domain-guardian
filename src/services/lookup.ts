@@ -31,7 +31,37 @@ export function parseRDAP(data: any) {
 
 // IP Geolocation
 export async function ipGeolocation(ip: string) {
-  const res = await fetch(`https://ipwho.is/${ip}`);
+  // Try ipapi.co first (HTTPS, no key needed, 1k/day)
+  try {
+    const res = await fetch(`https://ipapi.co/${ip}/json/`, { signal: AbortSignal.timeout(8000) });
+    if (res.ok) {
+      const data = await res.json();
+      if (!data.error) {
+        return {
+          ip: data.ip,
+          type: data.version || null,
+          continent: data.continent_code || null,
+          country: data.country_name,
+          flag: { emoji: '' },
+          region: data.region,
+          city: data.city,
+          postal: data.postal,
+          latitude: data.latitude,
+          longitude: data.longitude,
+          timezone: { id: data.timezone || '' },
+          connection: {
+            isp: data.org || null,
+            org: data.org || null,
+            asn: data.asn || null,
+            domain: null,
+          },
+        };
+      }
+    }
+  } catch { /* fall through to backup */ }
+
+  // Fallback: ipwho.is
+  const res = await fetch(`https://ipwho.is/${ip}`, { signal: AbortSignal.timeout(8000) });
   if (!res.ok) throw new Error('IP lookup failed');
   const data = await res.json();
   if (!data.success) throw new Error(data.message || 'IP lookup failed');
