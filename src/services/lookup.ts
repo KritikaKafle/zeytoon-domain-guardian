@@ -31,28 +31,27 @@ export function parseRDAP(data: any) {
 
 // IP Geolocation
 export async function ipGeolocation(ip: string) {
-  // Try ip-api.com first (no API key needed, JSON format)
-  const res = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,query,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,asname`);
+  const res = await fetch(`https://ipwho.is/${ip}`);
   if (!res.ok) throw new Error('IP lookup failed');
   const data = await res.json();
-  if (data.status === 'fail') throw new Error(data.message || 'IP lookup failed');
+  if (!data.success) throw new Error(data.message || 'IP lookup failed');
   return {
-    ip: data.query,
-    type: null,
-    continent: null,
+    ip: data.ip,
+    type: data.type || null,
+    continent: data.continent || null,
     country: data.country,
-    flag: { emoji: '' },
-    region: data.regionName,
+    flag: { emoji: data.flag?.emoji || '' },
+    region: data.region,
     city: data.city,
-    postal: data.zip,
-    latitude: data.lat,
-    longitude: data.lon,
-    timezone: { id: data.timezone },
+    postal: data.postal,
+    latitude: data.latitude,
+    longitude: data.longitude,
+    timezone: { id: data.timezone?.id || '' },
     connection: {
-      isp: data.isp,
-      org: data.org,
-      asn: data.as,
-      domain: null,
+      isp: data.connection?.isp || null,
+      org: data.connection?.org || null,
+      asn: data.connection?.asn || null,
+      domain: data.connection?.domain || null,
     },
   };
 }
