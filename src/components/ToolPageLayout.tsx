@@ -114,13 +114,61 @@ const ToolPageLayout = ({
           >
             <label className="block text-sm font-medium text-foreground mb-2">{inputLabel}</label>
             <div className="flex gap-3">
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={placeholder}
-                className="flex-1 px-4 py-3 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring text-sm"
-              />
+              <div className="relative flex-1">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onFocus={() => history.length > 0 && setShowHistory(true)}
+                  placeholder={placeholder}
+                  className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring text-sm"
+                />
+                <AnimatePresence>
+                  {showHistory && history.length > 0 && (
+                    <motion.div
+                      ref={dropdownRef}
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute z-50 top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg overflow-hidden"
+                    >
+                      <div className="flex items-center justify-between px-3 py-2 border-b border-border">
+                        <span className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+                          <Clock className="w-3 h-3" /> Recent searches
+                        </span>
+                        <button
+                          onClick={handleClearAll}
+                          className="text-xs text-muted-foreground hover:text-destructive flex items-center gap-1 transition-colors"
+                        >
+                          <Trash2 className="w-3 h-3" /> Clear
+                        </button>
+                      </div>
+                      <div className="max-h-48 overflow-y-auto">
+                        {history
+                          .filter((h) => !query || h.toLowerCase().includes(query.toLowerCase()))
+                          .map((item) => (
+                            <button
+                              key={item}
+                              onClick={() => handleSelectHistory(item)}
+                              className="w-full flex items-center justify-between px-3 py-2.5 text-sm text-foreground hover:bg-muted/60 transition-colors group"
+                            >
+                              <span className="flex items-center gap-2 truncate">
+                                <Clock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                                {item}
+                              </span>
+                              <X
+                                className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-destructive transition-all shrink-0"
+                                onClick={(e) => handleRemoveItem(e, item)}
+                              />
+                            </button>
+                          ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
               <button
                 type="submit"
                 disabled={isLoading || !query.trim()}
