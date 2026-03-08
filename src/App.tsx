@@ -12,7 +12,7 @@ import EmailBlacklist from "./pages/EmailBlacklist";
 import SslCheck from "./pages/SslCheck";
 import WebServerInfo from "./pages/WebServerInfo";
 import UrlBlacklist from "./pages/UrlBlacklist";
-import IpGeolocation from "./pages/IpGeolocation";
+
 import EmailValidation from "./pages/EmailValidation";
 import CspCheck from "./pages/CspCheck";
 import SecurityHeaders from "./pages/SecurityHeaders";
