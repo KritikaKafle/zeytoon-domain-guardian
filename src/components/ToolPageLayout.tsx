@@ -1,7 +1,8 @@
-import { ReactNode, useState, FormEvent } from "react";
-import { motion } from "framer-motion";
-import { LucideIcon, Search, Loader2 } from "lucide-react";
+import { ReactNode, useState, useEffect, FormEvent, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { LucideIcon, Search, Loader2, Clock, X, Trash2 } from "lucide-react";
 import Layout from "./Layout";
+import { getSearchHistory, addSearchHistory, removeSearchHistoryItem, clearSearchHistory } from "@/hooks/use-search-history";
 
 interface ToolPageLayoutProps {
   icon: LucideIcon;
@@ -9,6 +10,7 @@ interface ToolPageLayoutProps {
   description: string;
   placeholder?: string;
   inputLabel?: string;
+  toolId?: string;
   children?: ReactNode;
   features: { title: string; description: string }[];
   onSubmit?: (query: string) => void;
