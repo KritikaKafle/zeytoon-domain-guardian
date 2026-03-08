@@ -20,6 +20,8 @@ interface ToolPageLayoutProps {
   recordTypes?: string[];
 }
 
+const DEFAULT_RECORD_TYPES = ['A', 'AAAA', 'CNAME', 'MX', 'NS', 'PTR', 'SRV', 'SOA', 'TXT', 'CAA', 'DS', 'DNSKEY'];
+
 const ToolPageLayout = ({
   icon: Icon,
   title,
@@ -31,9 +33,12 @@ const ToolPageLayout = ({
   onSubmit,
   isLoading = false,
   results,
+  showRecordTypeSelector = false,
+  recordTypes = DEFAULT_RECORD_TYPES,
 }: ToolPageLayoutProps) => {
   const id = toolId || title.toLowerCase().replace(/\s+/g, "-");
   const [query, setQuery] = useState("");
+  const [selectedRecordType, setSelectedRecordType] = useState(recordTypes[0]);
   const [history, setHistory] = useState<string[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -60,7 +65,7 @@ const ToolPageLayout = ({
       addSearchHistory(id, query.trim());
       setHistory(getSearchHistory(id));
       setShowHistory(false);
-      onSubmit(query.trim());
+      onSubmit(query.trim(), showRecordTypeSelector ? selectedRecordType : undefined);
     }
   };
 
