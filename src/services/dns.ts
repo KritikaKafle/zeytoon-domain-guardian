@@ -43,7 +43,7 @@ export interface DNSResponse {
 export async function queryDNS(
   domain: string,
   type: string,
-  serverUrl: string = DOH_SERVERS['Cloudflare (US)']
+  serverUrl: string = DOH_SERVERS['Cloudflare (USA)'].url
 ): Promise<DNSResponse> {
   const res = await fetch(`${serverUrl}?name=${encodeURIComponent(domain)}&type=${type}`, {
     headers: { Accept: 'application/dns-json' },
@@ -66,10 +66,11 @@ export async function fullDNSLookup(domain: string) {
 export async function checkPropagation(domain: string, type: string = 'A') {
   const entries = Object.entries(DOH_SERVERS);
   const results = await Promise.allSettled(
-    entries.map(([, url]) => queryDNS(domain, type, url))
+    entries.map(([, server]) => queryDNS(domain, type, server.url))
   );
-  return entries.map(([name], i) => ({
+  return entries.map(([name, server], i) => ({
     server: name,
+    region: server.region,
     response: results[i].status === 'fulfilled' ? (results[i] as PromiseFulfilledResult<DNSResponse>).value : null,
     error: results[i].status === 'rejected' ? (results[i] as PromiseRejectedResult).reason?.message : null,
   }));
