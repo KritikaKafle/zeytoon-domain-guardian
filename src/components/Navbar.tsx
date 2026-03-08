@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import logo from "@/assets/zeytoonlab.png";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
@@ -21,9 +22,7 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border">
       <div className="container mx-auto px-4 flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-display font-bold text-sm">Z</span>
-          </div>
+          <img src={logo} alt="Zeytoon Lab" className="w-9 h-9 rounded-lg" />
           <span className="font-display font-bold text-lg text-foreground">
             Zeytoon<span className="text-primary">.Dev</span>
           </span>
