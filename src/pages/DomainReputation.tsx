@@ -52,11 +52,10 @@ const DomainReputation = () => {
             title="IP Blacklist Check"
             items={[
               { label: 'Resolved IP', value: ipBL.ip, status: 'info' },
-              ...ipBL.results.map((r) => ({
-                label: r.name,
-                value: r.listed ? 'LISTED' : 'Clean',
-                status: (r.listed ? 'error' : 'success') as const,
-              })),
+              ...ipBL.results.map((r) => {
+                const s: 'error' | 'success' = r.listed ? 'error' : 'success';
+                return { label: r.name, value: r.listed ? 'LISTED' : 'Clean', status: s };
+              }),
             ]}
           />
           <ResultsTable
