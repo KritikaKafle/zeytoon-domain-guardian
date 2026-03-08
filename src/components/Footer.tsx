@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import logo from "@/assets/zeytoonlab.png";
 
 const Footer = () => (
   <footer className="bg-hero text-hero-foreground">
