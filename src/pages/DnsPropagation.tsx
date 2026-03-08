@@ -24,11 +24,11 @@ const DnsPropagation = () => {
   const [recordType, setRecordType] = useState("A");
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<PropagationResult[]>([]);
-  const [mapServers, setMapServers] = useState(
+  const [mapServers, setMapServers] = useState<{ name: string; coordinates: [number, number]; status: 'success' | 'error' | 'pending' }[]>(
     DNS_SERVERS.map((s) => ({
       name: s.name,
       coordinates: s.coordinates,
-      status: 'pending' as const,
+      status: 'pending',
     }))
   );
 
