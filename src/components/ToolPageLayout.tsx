@@ -13,9 +13,11 @@ interface ToolPageLayoutProps {
   toolId?: string;
   children?: ReactNode;
   features: { title: string; description: string }[];
-  onSubmit?: (query: string) => void;
+  onSubmit?: (query: string, recordType?: string) => void;
   isLoading?: boolean;
   results?: ReactNode;
+  showRecordTypeSelector?: boolean;
+  recordTypes?: string[];
 }
 
 const ToolPageLayout = ({
