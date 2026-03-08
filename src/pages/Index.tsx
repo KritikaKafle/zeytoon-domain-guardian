@@ -14,7 +14,7 @@ const tools = [
   { icon: Shield, title: "SSL Certificate Check", description: "Validate SSL certificates, check expiration, certificate chain, and TLS configuration.", path: "/ssl-check" },
   { icon: Server, title: "Web Server Info", description: "Retrieve HTTP headers, detect technology stack, check open ports, and measure response time.", path: "/web-server-info" },
   { icon: AlertTriangle, title: "URL Blacklist Check", description: "Scan URLs against malware and phishing databases to detect malicious activity.", path: "/url-blacklist" },
-  { icon: MapPin, title: "IP Geolocation & ASN", description: "Get geographic location and ASN information for any IP address.", path: "/ip-geolocation" },
+  
   { icon: AtSign, title: "Email Validation", description: "Validate email format, check domain existence, MX records, and detect disposable addresses.", path: "/email-validation" },
   { icon: Lock, title: "CSP Check", description: "Analyze Content Security Policy headers to prevent XSS and injection attacks.", path: "/csp-check" },
   { icon: ShieldCheck, title: "Security Headers", description: "Check HSTS, X-Content-Type-Options, X-Frame-Options, XSS Protection, and CSP headers.", path: "/security-headers" },

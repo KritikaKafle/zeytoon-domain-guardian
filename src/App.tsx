@@ -38,7 +38,7 @@ const App = () => (
           <Route path="/ssl-check" element={<SslCheck />} />
           <Route path="/web-server-info" element={<WebServerInfo />} />
           <Route path="/url-blacklist" element={<UrlBlacklist />} />
-          <Route path="/ip-geolocation" element={<IpGeolocation />} />
+          
           <Route path="/email-validation" element={<EmailValidation />} />
           <Route path="/csp-check" element={<CspCheck />} />
           <Route path="/security-headers" element={<SecurityHeaders />} />

@@ -43,7 +43,7 @@ const Footer = () => (
           <h4 className="font-display font-semibold mb-4">More Tools</h4>
           <div className="space-y-2">
             {[
-              { label: "IP Geolocation", path: "/ip-geolocation" },
+              
               { label: "Email Validation", path: "/email-validation" },
               { label: "SEO Analysis", path: "/seo-analysis" },
               { label: "Domain Reputation", path: "/domain-reputation" },
