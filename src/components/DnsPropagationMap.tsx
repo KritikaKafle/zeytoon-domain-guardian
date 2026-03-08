@@ -33,14 +33,16 @@ const DnsPropagationMap = ({ servers }: DnsPropagationMapProps) => {
           </span>
         </div>
       </div>
-      <div className="aspect-[2/1] w-full">
+      <div className="w-full overflow-hidden">
         <ComposableMap
-          projection="geoMercator"
+          projection="geoNaturalEarth1"
           projectionConfig={{
-            scale: 120,
-            center: [10, 30],
+            scale: 160,
+            center: [10, 20],
           }}
-          style={{ width: "100%", height: "100%" }}
+          width={800}
+          height={420}
+          style={{ width: "100%", height: "auto" }}
         >
           <Geographies geography={geoUrl}>
             {({ geographies }) =>
