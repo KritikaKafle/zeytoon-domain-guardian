@@ -12,7 +12,7 @@ import EmailBlacklist from "./pages/EmailBlacklist";
 import SslCheck from "./pages/SslCheck";
 import WebServerInfo from "./pages/WebServerInfo";
 import UrlBlacklist from "./pages/UrlBlacklist";
-import IpGeolocation from "./pages/IpGeolocation";
+
 import EmailValidation from "./pages/EmailValidation";
 import CspCheck from "./pages/CspCheck";
 import SecurityHeaders from "./pages/SecurityHeaders";
@@ -38,7 +38,7 @@ const App = () => (
           <Route path="/ssl-check" element={<SslCheck />} />
           <Route path="/web-server-info" element={<WebServerInfo />} />
           <Route path="/url-blacklist" element={<UrlBlacklist />} />
-          <Route path="/ip-geolocation" element={<IpGeolocation />} />
+          
           <Route path="/email-validation" element={<EmailValidation />} />
           <Route path="/csp-check" element={<CspCheck />} />
           <Route path="/security-headers" element={<SecurityHeaders />} />
