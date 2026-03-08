@@ -31,11 +31,30 @@ export function parseRDAP(data: any) {
 
 // IP Geolocation
 export async function ipGeolocation(ip: string) {
-  const res = await fetch(`https://ipwho.is/${ip}`);
+  // Try ip-api.com first (no API key needed, JSON format)
+  const res = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,query,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,asname`);
   if (!res.ok) throw new Error('IP lookup failed');
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || 'IP lookup failed');
-  return data;
+  if (data.status === 'fail') throw new Error(data.message || 'IP lookup failed');
+  return {
+    ip: data.query,
+    type: null,
+    continent: null,
+    country: data.country,
+    flag: { emoji: '' },
+    region: data.regionName,
+    city: data.city,
+    postal: data.zip,
+    latitude: data.lat,
+    longitude: data.lon,
+    timezone: { id: data.timezone },
+    connection: {
+      isp: data.isp,
+      org: data.org,
+      asn: data.as,
+      domain: null,
+    },
+  };
 }
 
 // Email format validation
